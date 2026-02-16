@@ -1,15 +1,33 @@
-import { ChevronDown, Mic, Search, ShoppingBag, User, Play, Pause, Volume2, Maximize, Heart, Star, Send, Grid3X3, ChevronRight, Users, Clock, Truck, CreditCard, Headphones, Package, MapPin } from "lucide-react";
+import { ChevronDown, Mic, Search, ShoppingBag, User, Play, Pause, Volume2, Maximize, Heart, Star, Send, Grid3X3, ChevronRight, Users, Clock, Truck, CreditCard, Headphones, Package, MapPin, Zap, ShieldCheck, TrendingUp, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 import heroPhone1 from "@/assets/hero-phone1.jpeg";
 import heroPhone2 from "@/assets/hero-phone2.jpeg";
 import joinfunPhone from "@/assets/joinfun-phone.jpeg";
 import gotitallPhone from "@/assets/gotitall-phone.jpeg";
 import dealsPhone from "@/assets/deals-phone.jpeg";
 import qrcode from "@/assets/qrcode.png";
+
+/* ─── Animation helpers ─── */
+const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] as const } } };
+const fadeIn = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { duration: 0.5 } } };
+const scaleIn = { hidden: { opacity: 0, scale: 0.9 }, visible: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] as const } } };
+const stagger = { visible: { transition: { staggerChildren: 0.1 } } };
+
+const AnimatedSection = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
+  return (
+    <motion.div ref={ref} initial="hidden" animate={isInView ? "visible" : "hidden"} variants={stagger} className={className}>
+      {children}
+    </motion.div>
+  );
+};
 
 /* ─── Shared data ─── */
 const categories = ["All Categories", "Electronics", "Fashion", "Women's", "Kids' Fashion", "Healthy & Beauty", "Pharmacy", "Groceries", "Luxury Item", "Food"];
@@ -79,7 +97,23 @@ const browseCreators = [
   { name: "Jane Cooper", image: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=300", duration: "05:06" },
 ];
 
-/* ─── Mobile Landing (original) ─── */
+const stats = [
+  { value: "2M+", label: "Active Shoppers" },
+  { value: "50K+", label: "Live Shows Daily" },
+  { value: "10K+", label: "Verified Sellers" },
+  { value: "98%", label: "Happy Customers" },
+];
+
+const testimonials = [
+  { name: "Sarah J.", text: "TokShop completely changed how I shop. The live auctions are addictive — I scored a designer bag for 60% off!", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80", role: "Fashion Buyer" },
+  { name: "Marcus T.", text: "As a seller, my revenue tripled after going live on TokShop. The community is incredible.", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80", role: "Creator & Seller" },
+  { name: "Priya K.", text: "The real-time interaction with sellers makes online shopping feel personal again. Love it!", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80", role: "Beauty Enthusiast" },
+];
+
+/* ──────────────────────────────────────────────────────────── */
+/* ─── Mobile Landing ─── */
+/* ──────────────────────────────────────────────────────────── */
+
 const Logo = () => (
   <div className="flex items-center gap-2">
     <div className="relative w-12 h-12 rounded-full border-2 border-primary-foreground/80 flex items-center justify-center">
@@ -90,7 +124,7 @@ const Logo = () => (
 );
 
 const MobileNavbar = () => (
-  <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4">
+  <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-transparent">
     <Logo />
     <div className="flex items-center gap-3">
       <Button variant="outline" className="border-primary-foreground/60 bg-foreground/10 backdrop-blur-sm hover:bg-foreground/20 text-primary-foreground rounded-full px-6">Log in</Button>
@@ -100,92 +134,205 @@ const MobileNavbar = () => (
 );
 
 const PhoneMockup = ({ src, className = "" }: { src: string; className?: string }) => (
-  <div className={`relative ${className}`}>
-    <div className="w-[240px] rounded-[2rem] overflow-hidden shadow-2xl border-4 border-foreground/10">
+  <motion.div className={`relative ${className}`} variants={scaleIn}>
+    <div className="w-[220px] sm:w-[240px] rounded-[2rem] overflow-hidden shadow-2xl border-4 border-foreground/10" style={{ boxShadow: "var(--shadow-glow)" }}>
       <img src={src} alt="App Screenshot" className="w-full h-auto" />
     </div>
-  </div>
+  </motion.div>
 );
 
 const QRBlock = ({ label = "Download Tokshop live" }: { label?: string }) => (
-  <div>
+  <motion.div variants={fadeUp}>
     <p className="text-sm font-medium mb-2 opacity-90">{label}</p>
-    <div className="w-20 h-20 bg-primary-foreground rounded-lg overflow-hidden">
+    <div className="w-20 h-20 bg-primary-foreground rounded-lg overflow-hidden shadow-lg">
       <img src={qrcode} alt="QR Code" className="w-full h-full object-cover" />
     </div>
-  </div>
+  </motion.div>
+);
+
+const MobileStats = () => (
+  <AnimatedSection className="grid grid-cols-2 gap-4 px-6 py-12" >
+    {stats.map((s, i) => (
+      <motion.div key={i} variants={fadeUp} className="text-center p-6 rounded-2xl bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20">
+        <p className="text-3xl font-black">{s.value}</p>
+        <p className="text-sm opacity-80 mt-1">{s.label}</p>
+      </motion.div>
+    ))}
+  </AnimatedSection>
+);
+
+const MobileTestimonials = () => (
+  <AnimatedSection className="px-6 py-12">
+    <motion.h2 variants={fadeUp} className="text-3xl font-bold text-center mb-8">What People Say</motion.h2>
+    <div className="space-y-4">
+      {testimonials.map((t, i) => (
+        <motion.div key={i} variants={fadeUp} className="bg-primary-foreground/10 backdrop-blur-sm border border-primary-foreground/20 rounded-2xl p-5">
+          <div className="flex items-center gap-3 mb-3">
+            <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover" />
+            <div>
+              <p className="font-semibold text-sm">{t.name}</p>
+              <p className="text-xs opacity-70">{t.role}</p>
+            </div>
+            <div className="ml-auto flex gap-0.5">
+              {Array.from({ length: 5 }).map((_, j) => <Star key={j} className="w-3 h-3 text-accent fill-accent" />)}
+            </div>
+          </div>
+          <p className="text-sm opacity-90 leading-relaxed">"{t.text}"</p>
+        </motion.div>
+      ))}
+    </div>
+  </AnimatedSection>
+);
+
+const MobileTrustBar = () => (
+  <AnimatedSection className="px-6 py-10">
+    <div className="grid grid-cols-3 gap-4 text-center">
+      {[
+        { icon: ShieldCheck, label: "Buyer Protection" },
+        { icon: Truck, label: "Fast Shipping" },
+        { icon: Zap, label: "Instant Deals" },
+      ].map((item, i) => (
+        <motion.div key={i} variants={fadeUp} className="flex flex-col items-center gap-2">
+          <div className="w-12 h-12 rounded-full bg-primary-foreground/15 flex items-center justify-center">
+            <item.icon className="w-5 h-5" />
+          </div>
+          <span className="text-xs font-medium opacity-90">{item.label}</span>
+        </motion.div>
+      ))}
+    </div>
+  </AnimatedSection>
 );
 
 const MobileLanding = () => (
   <div className="min-h-screen text-primary-foreground">
     <MobileNavbar />
+
     {/* Hero */}
     <section className="relative min-h-screen flex items-center overflow-hidden" style={{ background: "var(--gradient-hero)" }}>
-      <div className="container mx-auto px-6 pt-24 pb-16 flex flex-col items-center gap-12">
-        <div className="relative flex items-end">
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-20 -left-20 w-64 h-64 rounded-full bg-primary-foreground/5 blur-3xl" />
+        <div className="absolute bottom-20 -right-20 w-80 h-80 rounded-full bg-secondary/10 blur-3xl" />
+      </div>
+      <AnimatedSection className="container mx-auto px-6 pt-28 pb-16 flex flex-col items-center gap-10 relative z-10">
+        <motion.div variants={fadeIn} className="relative flex items-end">
           <PhoneMockup src={heroPhone1} className="-rotate-6 z-10" />
           <PhoneMockup src={heroPhone2} className="rotate-3 -ml-16 mt-8" />
-        </div>
+        </motion.div>
         <div className="flex-1 text-center">
-          <h1 className="text-5xl font-bold leading-tight mb-6">The Live Shopping Marketplace</h1>
-          <p className="text-xl opacity-90 mb-8">Shop, sell, and connect around the things you love.</p>
+          <motion.p variants={fadeUp} className="text-sm uppercase tracking-[0.2em] opacity-70 mb-3 font-medium">Shop • Sell • Connect</motion.p>
+          <motion.h1 variants={fadeUp} className="text-4xl sm:text-5xl font-black leading-[1.1] mb-5">
+            The Live Shopping<br />
+            <span className="bg-gradient-to-r from-accent to-accent/70 bg-clip-text text-transparent">Marketplace</span>
+          </motion.h1>
+          <motion.p variants={fadeUp} className="text-lg opacity-85 mb-8 max-w-md mx-auto leading-relaxed">
+            Shop, sell, and connect around the things you love — all in real time.
+          </motion.p>
           <QRBlock />
-          <div className="flex flex-wrap justify-center gap-4 mt-8">
-            <Button className="rounded-full px-8 py-6 text-base border-2 border-primary-foreground/60 bg-transparent hover:bg-primary-foreground/10">Get Started</Button>
-            <Button className="rounded-full px-8 py-6 text-base bg-foreground/20 hover:bg-foreground/30 backdrop-blur-sm border-0">Browse Shows</Button>
-          </div>
+          <motion.div variants={fadeUp} className="flex flex-wrap justify-center gap-3 mt-8">
+            <Button className="rounded-full px-8 py-6 text-base border-2 border-primary-foreground/60 bg-transparent hover:bg-primary-foreground/10 transition-all hover:scale-105">Get Started</Button>
+            <Button className="rounded-full px-8 py-6 text-base bg-primary-foreground/20 hover:bg-primary-foreground/30 backdrop-blur-sm border-0 transition-all hover:scale-105">Browse Shows</Button>
+          </motion.div>
         </div>
-      </div>
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 cursor-pointer opacity-80 hover:opacity-100 transition-opacity">
+      </AnimatedSection>
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }} className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 cursor-pointer">
         <ChevronDown className="w-5 h-5 animate-bounce" />
-        <span className="text-sm font-medium">How it works</span>
-      </div>
+        <span className="text-sm font-medium opacity-70">Scroll to explore</span>
+      </motion.div>
     </section>
+
+    {/* Stats */}
+    <section style={{ background: "linear-gradient(180deg, hsl(348, 75%, 52%) 0%, hsl(168, 45%, 55%) 100%)" }}>
+      <MobileStats />
+    </section>
+
+    {/* Trust Bar */}
+    <section style={{ background: "hsl(168, 45%, 55%)" }}>
+      <MobileTrustBar />
+    </section>
+
     {/* Join */}
-    <section className="py-24 px-6" style={{ background: "linear-gradient(180deg, hsl(168, 45%, 55%) 0%, hsl(200, 50%, 40%) 100%)" }}>
-      <div className="container mx-auto flex flex-col items-center gap-16">
+    <section className="py-20 px-6" style={{ background: "linear-gradient(180deg, hsl(168, 45%, 55%) 0%, hsl(200, 50%, 40%) 100%)" }}>
+      <AnimatedSection className="container mx-auto flex flex-col items-center gap-12">
         <div className="text-center">
-          <p className="text-sm uppercase tracking-widest opacity-70 mb-4">How it works</p>
-          <h2 className="text-4xl font-bold mb-6">Join In the Fun</h2>
-          <p className="text-lg opacity-90 mb-8 max-w-lg mx-auto">Take part in fast-paced auctions, incredible flash sales, live show giveaways, and so much more.</p>
+          <motion.p variants={fadeUp} className="text-sm uppercase tracking-widest opacity-70 mb-4">How it works</motion.p>
+          <motion.h2 variants={fadeUp} className="text-4xl font-black mb-5">Join In the Fun</motion.h2>
+          <motion.p variants={fadeUp} className="text-lg opacity-90 mb-8 max-w-lg mx-auto leading-relaxed">
+            Take part in fast-paced auctions, incredible flash sales, live show giveaways, and so much more.
+          </motion.p>
           <QRBlock />
         </div>
         <PhoneMockup src={joinfunPhone} />
-      </div>
+      </AnimatedSection>
     </section>
+
     {/* Got It All */}
-    <section className="py-24 px-6" style={{ background: "linear-gradient(180deg, hsl(200, 50%, 40%) 0%, hsl(220, 50%, 35%) 100%)" }}>
-      <div className="container mx-auto flex flex-col items-center gap-16">
+    <section className="py-20 px-6" style={{ background: "linear-gradient(180deg, hsl(200, 50%, 40%) 0%, hsl(220, 50%, 35%) 100%)" }}>
+      <AnimatedSection className="container mx-auto flex flex-col items-center gap-12">
         <PhoneMockup src={gotitallPhone} />
         <div className="text-center">
-          <h2 className="text-4xl font-bold mb-6">We've Got It All</h2>
-          <p className="text-lg opacity-90 mb-8 max-w-lg mx-auto">Search our marketplace to find the exact product you're looking for.</p>
+          <motion.h2 variants={fadeUp} className="text-4xl font-black mb-5">We've Got It All</motion.h2>
+          <motion.p variants={fadeUp} className="text-lg opacity-90 mb-8 max-w-lg mx-auto leading-relaxed">Search our marketplace to find the exact product you're looking for.</motion.p>
           <QRBlock />
         </div>
-      </div>
+      </AnimatedSection>
     </section>
+
     {/* Deals */}
-    <section className="py-24 px-6" style={{ background: "linear-gradient(180deg, hsl(220, 50%, 35%) 0%, hsl(240, 40%, 25%) 100%)" }}>
-      <div className="container mx-auto flex flex-col items-center gap-16">
+    <section className="py-20 px-6" style={{ background: "linear-gradient(180deg, hsl(220, 50%, 35%) 0%, hsl(240, 40%, 25%) 100%)" }}>
+      <AnimatedSection className="container mx-auto flex flex-col items-center gap-12">
         <div className="text-center">
-          <h2 className="text-4xl font-bold mb-6">Find Incredible Deals<br />on Name Brands</h2>
-          <p className="text-lg opacity-90 mb-8 max-w-lg mx-auto">From the brands you love, to hard-to-find specialty products.</p>
+          <motion.h2 variants={fadeUp} className="text-4xl font-black mb-5">
+            Find Incredible Deals<br />on Name Brands
+          </motion.h2>
+          <motion.p variants={fadeUp} className="text-lg opacity-90 mb-8 max-w-lg mx-auto leading-relaxed">
+            From the brands you love, to hard-to-find specialty products.
+          </motion.p>
           <QRBlock />
-          <Button className="mt-8 rounded-full px-8 py-6 text-base border-2 border-primary-foreground/60 bg-transparent hover:bg-primary-foreground/10">Start Shopping</Button>
+          <motion.div variants={fadeUp}>
+            <Button className="mt-8 rounded-full px-8 py-6 text-base border-2 border-primary-foreground/60 bg-transparent hover:bg-primary-foreground/10 transition-all hover:scale-105">Start Shopping</Button>
+          </motion.div>
         </div>
         <PhoneMockup src={dealsPhone} />
-      </div>
+      </AnimatedSection>
     </section>
-    <footer className="py-8 px-6 text-center text-primary-foreground" style={{ background: "hsl(240, 40%, 20%)" }}>
+
+    {/* Testimonials */}
+    <section style={{ background: "linear-gradient(180deg, hsl(240, 40%, 25%) 0%, hsl(260, 40%, 22%) 100%)" }}>
+      <MobileTestimonials />
+    </section>
+
+    {/* CTA */}
+    <section className="py-16 px-6 text-center" style={{ background: "hsl(260, 40%, 22%)" }}>
+      <AnimatedSection>
+        <motion.h2 variants={fadeUp} className="text-3xl font-black mb-4">Ready to Start?</motion.h2>
+        <motion.p variants={fadeUp} className="opacity-80 mb-8 max-w-md mx-auto">Join millions of shoppers and creators on the world's favorite live shopping platform.</motion.p>
+        <motion.div variants={fadeUp} className="flex flex-wrap justify-center gap-3">
+          <Link to="/signup">
+            <Button className="rounded-full px-8 py-6 text-base bg-secondary text-secondary-foreground hover:opacity-90 transition-all hover:scale-105">
+              Create Account <ArrowRight className="w-4 h-4 ml-1" />
+            </Button>
+          </Link>
+          <Link to="/shows">
+            <Button variant="outline" className="rounded-full px-8 py-6 text-base border-primary-foreground/40 text-primary-foreground hover:bg-primary-foreground/10">
+              Watch Live
+            </Button>
+          </Link>
+        </motion.div>
+      </AnimatedSection>
+    </section>
+
+    <footer className="py-8 px-6 text-center text-primary-foreground" style={{ background: "hsl(260, 40%, 18%)" }}>
       <button onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="text-sm opacity-70 hover:opacity-100 transition-opacity">↑ To the Top</button>
     </footer>
   </div>
 );
 
+/* ──────────────────────────────────────────────────────────── */
 /* ─── Desktop Layout ─── */
+/* ──────────────────────────────────────────────────────────── */
+
 const DesktopNav = () => (
-  <header className="sticky top-0 z-50 bg-background border-b border-border">
-    {/* Top bar */}
+  <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
     <div className="flex items-center gap-4 px-6 py-3">
       <Link to="/" className="flex items-center gap-2 shrink-0">
         <div className="w-8 h-8 rounded-full border-2 border-secondary flex items-center justify-center">
@@ -203,12 +350,11 @@ const DesktopNav = () => (
         </div>
       </div>
       <div className="flex items-center gap-4 text-sm text-muted-foreground shrink-0">
-        <span className="flex items-center gap-1 cursor-pointer hover:text-foreground"><MapPin className="w-4 h-4" /> Update Location</span>
-        <Link to="/cart" className="flex items-center gap-1 hover:text-foreground"><ShoppingBag className="w-4 h-4" /> Cart</Link>
-        <Link to="/login" className="flex items-center gap-1 hover:text-foreground"><User className="w-4 h-4" /> Sign In</Link>
+        <span className="flex items-center gap-1 cursor-pointer hover:text-foreground transition-colors"><MapPin className="w-4 h-4" /> Update Location</span>
+        <Link to="/cart" className="flex items-center gap-1 hover:text-foreground transition-colors"><ShoppingBag className="w-4 h-4" /> Cart</Link>
+        <Link to="/login" className="flex items-center gap-1 hover:text-foreground transition-colors"><User className="w-4 h-4" /> Sign In</Link>
       </div>
     </div>
-    {/* Categories bar */}
     <div className="flex items-center gap-1 px-6 py-2 border-t border-border/50 overflow-x-auto scrollbar-none">
       {categories.map((cat, i) => (
         <button key={cat} className={`whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${i === 0 ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground hover:bg-muted"}`}>
@@ -224,41 +370,36 @@ const DesktopNav = () => (
 );
 
 const LiveStreamSection = () => (
-  <section className="px-6 py-6">
-    {/* Tabs */}
-    <div className="flex items-center gap-1 mb-4">
+  <AnimatedSection className="px-6 py-6">
+    <motion.div variants={fadeIn} className="flex items-center gap-1 mb-4">
       {["Live", "Discover", "Following", "Browse"].map((tab, i) => (
-        <button key={tab} className={`px-5 py-2 rounded-full text-sm font-medium transition-colors ${i === 0 ? "bg-foreground text-background" : i === 1 ? "bg-secondary text-secondary-foreground" : "text-muted-foreground hover:bg-muted"}`}>
+        <button key={tab} className={`px-5 py-2 rounded-full text-sm font-medium transition-all ${i === 0 ? "bg-foreground text-background" : i === 1 ? "bg-secondary text-secondary-foreground" : "text-muted-foreground hover:bg-muted"}`}>
           {tab}
         </button>
       ))}
-    </div>
+    </motion.div>
 
-    {/* Stream + Chat */}
     <div className="flex gap-4">
-      {/* Video */}
-      <div className="flex-1">
-        <div className="relative aspect-video rounded-2xl overflow-hidden bg-foreground/5">
-          <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800" alt="Live Stream" className="w-full h-full object-cover" />
+      <motion.div variants={fadeUp} className="flex-1">
+        <div className="relative aspect-video rounded-2xl overflow-hidden bg-foreground/5 group">
+          <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800" alt="Live Stream" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-          {/* Controls */}
           <div className="absolute bottom-0 left-0 right-0 p-4 flex items-center gap-3">
-            <button className="w-8 h-8 rounded-full bg-background/20 backdrop-blur-sm flex items-center justify-center text-primary-foreground"><Pause className="w-4 h-4" /></button>
-            <button className="w-8 h-8 rounded-full bg-background/20 backdrop-blur-sm flex items-center justify-center text-primary-foreground"><Volume2 className="w-4 h-4" /></button>
+            <button className="w-8 h-8 rounded-full bg-background/20 backdrop-blur-sm flex items-center justify-center text-primary-foreground hover:bg-background/30 transition-colors"><Pause className="w-4 h-4" /></button>
+            <button className="w-8 h-8 rounded-full bg-background/20 backdrop-blur-sm flex items-center justify-center text-primary-foreground hover:bg-background/30 transition-colors"><Volume2 className="w-4 h-4" /></button>
             <Badge className="bg-destructive border-0 text-primary-foreground text-[10px] ml-1">🔴 LIVE</Badge>
             <div className="flex-1" />
-            <button className="w-8 h-8 rounded-full bg-background/20 backdrop-blur-sm flex items-center justify-center text-primary-foreground"><Grid3X3 className="w-4 h-4" /></button>
-            <button className="w-8 h-8 rounded-full bg-background/20 backdrop-blur-sm flex items-center justify-center text-primary-foreground"><Maximize className="w-4 h-4" /></button>
+            <button className="w-8 h-8 rounded-full bg-background/20 backdrop-blur-sm flex items-center justify-center text-primary-foreground hover:bg-background/30 transition-colors"><Grid3X3 className="w-4 h-4" /></button>
+            <button className="w-8 h-8 rounded-full bg-background/20 backdrop-blur-sm flex items-center justify-center text-primary-foreground hover:bg-background/30 transition-colors"><Maximize className="w-4 h-4" /></button>
           </div>
         </div>
 
-        {/* Stream info */}
         <div className="mt-4">
           <div className="flex items-start justify-between">
             <div>
               <h2 className="text-xl font-bold text-foreground">Best Deals of the Week</h2>
               <div className="flex items-center gap-3 mt-2">
-                <div className="w-8 h-8 rounded-full overflow-hidden">
+                <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-secondary ring-offset-2 ring-offset-background">
                   <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60" alt="" className="w-full h-full object-cover" />
                 </div>
                 <span className="font-medium text-sm text-foreground">Arlene McCoy <span className="text-secondary">✓</span></span>
@@ -267,19 +408,18 @@ const LiveStreamSection = () => (
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-destructive font-medium flex items-center gap-1">👁 45.6k watching</span>
-              <button className="p-2 rounded-full hover:bg-muted"><Heart className="w-4 h-4 text-muted-foreground" /></button>
+              <button className="p-2 rounded-full hover:bg-muted transition-colors"><Heart className="w-4 h-4 text-muted-foreground" /></button>
             </div>
           </div>
           <div className="flex items-center gap-2 mt-3">
-            <Button size="sm" className="rounded-full bg-secondary text-secondary-foreground text-xs">+ Follow</Button>
+            <Button size="sm" className="rounded-full bg-secondary text-secondary-foreground text-xs hover:opacity-90 transition-opacity">+ Follow</Button>
             <Button size="sm" variant="outline" className="rounded-full text-xs">Live Notifications ▾</Button>
           </div>
         </div>
 
-        {/* Products carousel */}
         <div className="flex gap-3 mt-4 overflow-x-auto pb-2">
           {featuredProducts.map((p, i) => (
-            <div key={i} className="flex gap-2 bg-card border border-border/50 rounded-xl p-2 min-w-[200px] shrink-0">
+            <motion.div key={i} whileHover={{ y: -2, boxShadow: "var(--shadow-card-hover)" }} className="flex gap-2 bg-card border border-border/50 rounded-xl p-2 min-w-[200px] shrink-0 transition-shadow cursor-pointer">
               <div className="w-14 h-14 rounded-lg overflow-hidden bg-muted shrink-0">
                 <img src={p.image} alt="" className="w-full h-full object-cover" />
               </div>
@@ -288,16 +428,16 @@ const LiveStreamSection = () => (
                 <p className="text-xs mt-1"><span className="font-bold text-foreground">${p.price.toFixed(2)}</span> <span className="text-muted-foreground line-through">${p.old}</span></p>
               </div>
               {i === 0 && <div className="shrink-0 self-end"><div className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center"><ShoppingBag className="w-3 h-3 text-secondary-foreground" /></div></div>}
-            </div>
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* Chat */}
-      <div className="w-[300px] shrink-0 bg-card border border-border/50 rounded-2xl flex flex-col">
+      <motion.div variants={fadeUp} className="w-[300px] shrink-0 bg-card border border-border/50 rounded-2xl flex flex-col">
         <div className="p-3 border-b border-border/50 flex items-center justify-between">
           <span className="font-semibold text-sm text-foreground">Live chat</span>
-          <button className="text-muted-foreground hover:text-foreground">•••</button>
+          <button className="text-muted-foreground hover:text-foreground transition-colors">•••</button>
         </div>
         <div className="flex-1 overflow-y-auto p-3 space-y-3 max-h-[400px]">
           {chatMessages.map((m, i) => (
@@ -314,45 +454,45 @@ const LiveStreamSection = () => (
         </div>
         <div className="p-3 border-t border-border/50 flex items-center gap-2">
           <Input placeholder="Send a message..." className="text-xs h-8 rounded-full bg-muted border-0" />
-          <button className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0"><Grid3X3 className="w-3.5 h-3.5 text-muted-foreground" /></button>
-          <button className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center shrink-0"><Send className="w-3.5 h-3.5 text-secondary-foreground" /></button>
+          <button className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0 hover:bg-muted/80 transition-colors"><Grid3X3 className="w-3.5 h-3.5 text-muted-foreground" /></button>
+          <button className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center shrink-0 hover:opacity-90 transition-opacity"><Send className="w-3.5 h-3.5 text-secondary-foreground" /></button>
         </div>
-      </div>
+      </motion.div>
     </div>
-  </section>
+  </AnimatedSection>
 );
 
 const FeaturedCreators = () => (
-  <section className="px-6 py-6">
-    <div className="flex items-center justify-between mb-4">
+  <AnimatedSection className="px-6 py-6">
+    <motion.div variants={fadeUp} className="flex items-center justify-between mb-4">
       <h2 className="text-xl font-bold text-foreground">Featured Creators</h2>
       <Link to="/shows" className="text-sm text-secondary hover:underline flex items-center gap-1">View All <ChevronRight className="w-4 h-4" /></Link>
-    </div>
-    <div className="flex gap-6 overflow-x-auto pb-2">
+    </motion.div>
+    <motion.div variants={stagger} className="flex gap-6 overflow-x-auto pb-2">
       {creators.map((c, i) => (
-        <div key={i} className="flex flex-col items-center gap-2 shrink-0">
+        <motion.div key={i} variants={fadeUp} whileHover={{ scale: 1.05 }} className="flex flex-col items-center gap-2 shrink-0 cursor-pointer">
           <div className={`relative w-16 h-16 rounded-full overflow-hidden ${c.isLive ? "ring-2 ring-destructive ring-offset-2 ring-offset-background" : ""}`}>
             <img src={c.avatar} alt={c.name} className="w-full h-full object-cover" />
             {c.isLive && <Badge className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-destructive border-0 text-[8px] text-primary-foreground px-1.5 py-0">LIVE</Badge>}
           </div>
           <span className="text-xs text-foreground font-medium text-center w-16 truncate">{c.name}</span>
-        </div>
+        </motion.div>
       ))}
-    </div>
-  </section>
+    </motion.div>
+  </AnimatedSection>
 );
 
 const LimitedCoupons = () => (
-  <section className="px-6 py-6">
-    <div className="flex items-center justify-between mb-4">
+  <AnimatedSection className="px-6 py-6">
+    <motion.div variants={fadeUp} className="flex items-center justify-between mb-4">
       <h2 className="text-xl font-bold text-foreground">Limited-Time Coupon</h2>
       <Link to="/marketplace" className="text-sm text-secondary hover:underline flex items-center gap-1">View All <ChevronRight className="w-4 h-4" /></Link>
-    </div>
-    <div className="grid grid-cols-3 gap-4">
+    </motion.div>
+    <motion.div variants={stagger} className="grid grid-cols-3 gap-4">
       {couponVideos.map((v, i) => (
-        <div key={i} className="group">
+        <motion.div key={i} variants={fadeUp} className="group">
           <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-muted">
-            <img src={v.image} alt={v.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+            <img src={v.image} alt={v.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
             <Badge className="absolute top-3 left-3 bg-background/30 backdrop-blur-sm border-0 text-primary-foreground text-[10px]">{v.date}</Badge>
             <div className="absolute bottom-3 right-3 flex items-center gap-1 text-primary-foreground text-xs">
@@ -376,16 +516,54 @@ const LimitedCoupons = () => (
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       ))}
-    </div>
-  </section>
+    </motion.div>
+  </AnimatedSection>
+);
+
+const DesktopStats = () => (
+  <AnimatedSection className="px-6 py-8">
+    <motion.div variants={stagger} className="grid grid-cols-4 gap-4">
+      {stats.map((s, i) => (
+        <motion.div key={i} variants={fadeUp} whileHover={{ y: -4 }} className="text-center p-6 rounded-2xl bg-card border border-border/50 transition-shadow hover:shadow-lg cursor-default">
+          <p className="text-3xl font-black text-secondary">{s.value}</p>
+          <p className="text-sm text-muted-foreground mt-1">{s.label}</p>
+        </motion.div>
+      ))}
+    </motion.div>
+  </AnimatedSection>
+);
+
+const DesktopTestimonials = () => (
+  <AnimatedSection className="px-6 py-8">
+    <motion.div variants={fadeUp} className="flex items-center justify-between mb-6">
+      <h2 className="text-xl font-bold text-foreground">What Our Community Says</h2>
+    </motion.div>
+    <motion.div variants={stagger} className="grid grid-cols-3 gap-4">
+      {testimonials.map((t, i) => (
+        <motion.div key={i} variants={fadeUp} whileHover={{ y: -4 }} className="bg-card border border-border/50 rounded-2xl p-6 transition-shadow hover:shadow-lg">
+          <div className="flex gap-0.5 mb-4">
+            {Array.from({ length: 5 }).map((_, j) => <Star key={j} className="w-4 h-4 text-accent fill-accent" />)}
+          </div>
+          <p className="text-sm text-foreground leading-relaxed mb-4">"{t.text}"</p>
+          <div className="flex items-center gap-3 pt-4 border-t border-border/50">
+            <img src={t.avatar} alt={t.name} className="w-9 h-9 rounded-full object-cover" />
+            <div>
+              <p className="text-sm font-semibold text-foreground">{t.name}</p>
+              <p className="text-xs text-muted-foreground">{t.role}</p>
+            </div>
+          </div>
+        </motion.div>
+      ))}
+    </motion.div>
+  </AnimatedSection>
 );
 
 const UpcomingEvents = () => (
-  <div className="flex gap-4 mb-6">
+  <motion.div variants={stagger} className="flex gap-4 mb-6">
     {upcomingEvents.map((e, i) => (
-      <div key={i} className={`flex-1 rounded-2xl p-6 bg-gradient-to-br ${e.gradient} text-primary-foreground relative overflow-hidden`}>
+      <motion.div key={i} variants={fadeUp} whileHover={{ scale: 1.01 }} className={`flex-1 rounded-2xl p-6 bg-gradient-to-br ${e.gradient} text-primary-foreground relative overflow-hidden cursor-pointer transition-transform`}>
         <Badge className="bg-primary-foreground/20 border-0 text-primary-foreground text-[10px] mb-3">Upcoming {i === 0 ? "🔴 LIVE" : "🟢 LIVE"}</Badge>
         <h3 className="text-2xl font-bold leading-tight mb-2">{e.title}</h3>
         <p className="text-sm opacity-80 mb-3">{e.subtitle}</p>
@@ -394,44 +572,47 @@ const UpcomingEvents = () => (
           {e.time && <span>🕐 {e.time}</span>}
         </div>
         <div className="absolute -bottom-4 -right-4 w-24 h-24 rounded-2xl bg-primary-foreground/10 rotate-12" />
-      </div>
+        <div className="absolute top-4 right-4 w-16 h-16 rounded-full bg-primary-foreground/5" />
+      </motion.div>
     ))}
-  </div>
+  </motion.div>
 );
 
 const BrowseCreatorGrid = () => (
   <div>
     <div className="flex gap-2 mb-4 overflow-x-auto pb-1">
       {browseCategories.map((cat, i) => (
-        <button key={cat} className={`whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-medium border transition-colors ${i === 0 ? "bg-foreground text-background border-foreground" : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"}`}>
+        <button key={cat} className={`whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-medium border transition-all ${i === 0 ? "bg-foreground text-background border-foreground" : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"}`}>
           {cat}
         </button>
       ))}
     </div>
-    <div className="grid grid-cols-5 gap-4">
+    <motion.div variants={stagger} className="grid grid-cols-5 gap-4">
       {browseCreators.map((c, i) => (
-        <Link key={i} to={`/show/${i + 1}`} className="group">
-          <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-muted">
-            <img src={c.image} alt={c.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-            {c.duration !== "—" && (
-              <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-destructive/90 text-primary-foreground text-[10px] px-1.5 py-0.5 rounded">
-                <Play className="w-2.5 h-2.5" /> {c.duration}
-              </div>
-            )}
-          </div>
-          <p className="text-xs font-medium text-foreground mt-1.5 truncate">{c.name}</p>
-        </Link>
+        <motion.div key={i} variants={fadeUp}>
+          <Link to={`/show/${i + 1}`} className="group block">
+            <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-muted">
+              <img src={c.image} alt={c.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+              {c.duration !== "—" && (
+                <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-destructive/90 text-primary-foreground text-[10px] px-1.5 py-0.5 rounded">
+                  <Play className="w-2.5 h-2.5" /> {c.duration}
+                </div>
+              )}
+            </div>
+            <p className="text-xs font-medium text-foreground mt-1.5 truncate">{c.name}</p>
+          </Link>
+        </motion.div>
       ))}
-    </div>
+    </motion.div>
     <div className="flex justify-center mt-6">
-      <Button variant="outline" className="rounded-full px-8">Show More →</Button>
+      <Button variant="outline" className="rounded-full px-8 hover:scale-105 transition-transform">Show More →</Button>
     </div>
   </div>
 );
 
 const BestSellersBanner = () => (
-  <div className="mt-8 rounded-2xl overflow-hidden bg-gradient-to-r from-muted to-muted/50 flex items-center">
+  <motion.div variants={fadeUp} whileHover={{ scale: 1.005 }} className="mt-8 rounded-2xl overflow-hidden bg-gradient-to-r from-muted to-muted/50 flex items-center cursor-pointer transition-transform">
     <div className="flex-1 p-8">
       <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400" alt="" className="w-full h-48 object-cover rounded-xl" />
     </div>
@@ -445,30 +626,32 @@ const BestSellersBanner = () => (
       </div>
       <h3 className="text-3xl font-bold text-foreground mb-2">Best Sellers</h3>
       <p className="text-sm text-muted-foreground mb-4">Live on Tuesdays, Wednesdays, Thursdays</p>
-      <Button className="rounded-full bg-foreground text-background hover:bg-foreground/90 gap-1">
+      <Button className="rounded-full bg-foreground text-background hover:bg-foreground/90 gap-1 hover:scale-105 transition-transform">
         <Play className="w-3.5 h-3.5" /> Watch
       </Button>
     </div>
-  </div>
+  </motion.div>
 );
 
 const ServiceBar = () => (
-  <div className="grid grid-cols-4 gap-4 mt-8 mb-8">
+  <motion.div variants={stagger} className="grid grid-cols-4 gap-4 mt-8 mb-8">
     {[
       { icon: MapPin, label: "Free in-store pick up", sub: "24/7 Amazing services" },
       { icon: Truck, label: "Free Shipping", sub: "24/7 Amazing services" },
       { icon: CreditCard, label: "Flexible Payment", sub: "24/7 Amazing services" },
       { icon: Headphones, label: "Convenient help", sub: "24/7 Amazing services" },
     ].map((s, i) => (
-      <div key={i} className="flex items-center gap-3 bg-card border border-border/50 rounded-xl p-4">
-        <s.icon className="w-5 h-5 text-foreground shrink-0" />
+      <motion.div key={i} variants={fadeUp} whileHover={{ y: -2 }} className="flex items-center gap-3 bg-card border border-border/50 rounded-xl p-4 transition-shadow hover:shadow-md cursor-default">
+        <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center shrink-0">
+          <s.icon className="w-5 h-5 text-secondary" />
+        </div>
         <div>
           <p className="text-sm font-semibold text-foreground">{s.label}</p>
           <p className="text-[10px] text-muted-foreground">{s.sub}</p>
         </div>
-      </div>
+      </motion.div>
     ))}
-  </div>
+  </motion.div>
 );
 
 const DesktopFooter = () => (
@@ -477,21 +660,26 @@ const DesktopFooter = () => (
       {[
         { title: "About TokShop", links: ["Company Info", "News", "Investors", "Careers", "Policies"] },
         { title: "Order & Purchases", links: ["Check order Status", "Shipping, Delivery & Pickup", "Returns & Exchanges", "Price Match Guarantee"] },
-        { title: "Popular Categories", links: ["Check order Status", "Shipping, Delivery & Pickup", "Returns & Exchanges", "Price Match Guarantee"] },
+        { title: "Popular Categories", links: ["Electronics", "Fashion", "Beauty", "Groceries"] },
         { title: "Support & Services", links: ["Seller Center", "Contact Us", "Help Center", "Return Policy"] },
       ].map((col, i) => (
         <div key={i}>
           <h4 className="font-semibold text-sm text-foreground mb-3">{col.title}</h4>
           <ul className="space-y-2">
             {col.links.map((link, j) => (
-              <li key={j}><span className="text-xs text-muted-foreground hover:text-foreground cursor-pointer">{link}</span></li>
+              <li key={j}><span className="text-xs text-muted-foreground hover:text-foreground cursor-pointer transition-colors">{link}</span></li>
             ))}
           </ul>
         </div>
       ))}
     </div>
-    <div className="max-w-7xl mx-auto mt-8 pt-6 border-t border-border/50 text-center">
+    <div className="max-w-7xl mx-auto mt-8 pt-6 border-t border-border/50 flex items-center justify-between">
       <p className="text-xs text-muted-foreground">© 2026 TokShop. All rights reserved.</p>
+      <div className="flex items-center gap-4 text-xs text-muted-foreground">
+        <span className="hover:text-foreground cursor-pointer transition-colors">Privacy Policy</span>
+        <span className="hover:text-foreground cursor-pointer transition-colors">Terms of Service</span>
+        <span className="hover:text-foreground cursor-pointer transition-colors">Cookie Settings</span>
+      </div>
     </div>
   </footer>
 );
@@ -500,18 +688,19 @@ const DesktopLayout = () => (
   <div className="min-h-screen bg-background text-foreground">
     <DesktopNav />
     <div className="max-w-7xl mx-auto">
-      {/* Left column: Live experience */}
       <LiveStreamSection />
       <FeaturedCreators />
+      <DesktopStats />
       <LimitedCoupons />
 
-      {/* Browse section (right side of wireframe — shown below on single-column desktop) */}
-      <div className="px-6 py-8 border-t border-border/50">
+      <AnimatedSection className="px-6 py-8 border-t border-border/50">
         <UpcomingEvents />
         <BrowseCreatorGrid />
         <BestSellersBanner />
-        <ServiceBar />
-      </div>
+      </AnimatedSection>
+
+      <DesktopTestimonials />
+      <ServiceBar />
     </div>
     <DesktopFooter />
   </div>
