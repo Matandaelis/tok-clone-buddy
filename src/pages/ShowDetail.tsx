@@ -1,9 +1,11 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Heart, Send, ShoppingBag, Users, MoreVertical } from "lucide-react";
+import { ArrowLeft, Heart, Send, ShoppingBag, Users, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
+import { useLiveKit } from "@/hooks/use-livekit";
+import LiveVideoPlayer from "@/components/LiveVideoPlayer";
 
 const chatMessages = [
   { user: "Sarah M.", text: "Love this color! 😍", time: "2m" },
@@ -15,11 +17,30 @@ const ShowDetail = () => {
   const { id } = useParams();
   const [message, setMessage] = useState("");
 
+  const {
+    connectionState,
+    videoTrack,
+    audioTrack,
+    participantCount,
+    error,
+    connect,
+    isConnected,
+  } = useLiveKit({
+    roomName: `show-${id}`,
+    isPublisher: false,
+  });
+
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
       {/* Video area */}
-      <div className="relative flex-1 min-h-[60vh] bg-gradient-to-b from-secondary/30 to-black">
-        <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800" alt="Live Show" className="absolute inset-0 w-full h-full object-cover opacity-60" />
+      <div className="relative flex-1 min-h-[60vh]">
+        <LiveVideoPlayer
+          videoTrack={videoTrack}
+          audioTrack={audioTrack}
+          connectionState={connectionState}
+          fallbackImage="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800"
+          error={error}
+        />
 
         {/* Overlay UI */}
         <div className="relative z-10 flex flex-col h-full p-4">
@@ -29,11 +50,21 @@ const ShowDetail = () => {
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div className="flex items-center gap-2">
-              <Badge className="bg-destructive text-white border-0 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE
-              </Badge>
+              {isConnected ? (
+                <Badge className="bg-destructive text-white border-0 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse" /> LIVE
+                </Badge>
+              ) : (
+                <Button
+                  size="sm"
+                  onClick={connect}
+                  className="rounded-full bg-destructive text-white border-0 flex items-center gap-1 h-7 text-xs"
+                >
+                  <Radio className="w-3 h-3" /> Join Stream
+                </Button>
+              )}
               <Badge className="bg-white/10 backdrop-blur-sm border-0 flex items-center gap-1">
-                <Users className="w-3 h-3" /> 1.2k
+                <Users className="w-3 h-3" /> {isConnected ? participantCount : "1.2k"}
               </Badge>
             </div>
           </div>
