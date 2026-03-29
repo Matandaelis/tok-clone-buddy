@@ -19,6 +19,7 @@ import Settings from "./pages/Settings";
 import Help from "./pages/Help";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import GoLive from "./pages/GoLive";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -46,6 +47,7 @@ const App = () => (
           <Route path="/help" element={<Help />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/go-live" element={<GoLive />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
