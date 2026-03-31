@@ -1,12 +1,31 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Mic } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setLoading(false);
+    if (error) {
+      toast({ title: "Login failed", description: error.message, variant: "destructive" });
+    } else {
+      navigate("/");
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4" style={{ background: "var(--gradient-hero)" }}>
@@ -20,27 +39,24 @@ const Login = () => {
         </div>
 
         <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20">
-          <div className="space-y-4">
+          <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <Label className="text-white/80 text-sm">Email</Label>
-              <Input placeholder="you@example.com" className="mt-1.5 bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-xl" />
+              <Input value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" type="email" required className="mt-1.5 bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-xl" />
             </div>
             <div>
               <Label className="text-white/80 text-sm">Password</Label>
               <div className="relative mt-1.5">
-                <Input type={showPassword ? "text" : "password"} placeholder="••••••••" className="bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-xl pr-10" />
-                <button onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50">
+                <Input value={password} onChange={e => setPassword(e.target.value)} type={showPassword ? "text" : "password"} placeholder="••••••••" required className="bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-xl pr-10" />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50">
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
-            <div className="text-right">
-              <a href="#" className="text-xs text-white/60 hover:text-white">Forgot password?</a>
-            </div>
-            <Button className="w-full rounded-xl h-12 bg-white text-black font-semibold hover:bg-white/90">
-              Log In
+            <Button type="submit" disabled={loading} className="w-full rounded-xl h-12 bg-white text-black font-semibold hover:bg-white/90">
+              {loading ? "Logging in..." : "Log In"}
             </Button>
-          </div>
+          </form>
 
           <div className="mt-6 text-center">
             <p className="text-white/60 text-sm">
