@@ -103,12 +103,20 @@ const GoLive = () => {
   const handleGoLive = async () => {
     if (!title.trim()) return;
 
-    await connect();
-    setStep("live");
-
-    // Publish local tracks
     try {
+      await connect();
+
+      // Only transition if connection succeeded
+      if (room.state !== ConnectionState.Connected) {
+        return;
+      }
+
+      setStep("live");
+
+      // Publish local tracks
       if (cameraOn) {
+        // Stop the preview track first
+        localVideoTrackRef.current?.stop();
         const videoTrack = await createLocalVideoTrack({ resolution: { width: 720, height: 1280 } });
         localVideoTrackRef.current = videoTrack;
         await room.localParticipant.publishTrack(videoTrack);
@@ -119,7 +127,7 @@ const GoLive = () => {
         await room.localParticipant.publishTrack(audioTrack);
       }
     } catch (err) {
-      console.error("Publish error:", err);
+      console.error("Go live error:", err);
     }
   };
 
