@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Search, PlayCircle, ShoppingBag, User, Mic } from "lucide-react";
+import { Home, Search, PlayCircle, ShoppingBag, User, Mic, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navItems = [
   { icon: Home, label: "Home", path: "/" },
@@ -18,24 +19,41 @@ const Logo = () => (
   </Link>
 );
 
-const TopNav = () => (
-  <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-background/90 backdrop-blur-lg border-b border-border/50 flex items-center justify-between px-4 md:px-8">
-    <Logo />
-    <nav className="hidden md:flex items-center gap-6">
-      {navItems.map((item) => (
-        <Link key={item.path} to={item.path} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-          {item.label}
-        </Link>
-      ))}
-    </nav>
-    <div className="flex items-center gap-3">
-      <Link to="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground">Log in</Link>
-      <Link to="/signup" className="text-sm font-medium bg-secondary text-secondary-foreground px-4 py-2 rounded-full hover:opacity-90 transition-opacity">
-        Sign up
-      </Link>
-    </div>
-  </header>
-);
+const TopNav = () => {
+  const { user, signOut } = useAuth();
+
+  return (
+    <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-background/90 backdrop-blur-lg border-b border-border/50 flex items-center justify-between px-4 md:px-8">
+      <Logo />
+      <nav className="hidden md:flex items-center gap-6">
+        {navItems.map((item) => (
+          <Link key={item.path} to={item.path} className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            {item.label}
+          </Link>
+        ))}
+      </nav>
+      <div className="flex items-center gap-3">
+        {user ? (
+          <>
+            <Link to="/profile" className="text-sm font-medium text-muted-foreground hover:text-foreground">
+              {user.user_metadata?.first_name || "Profile"}
+            </Link>
+            <button onClick={signOut} className="text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-1">
+              <LogOut className="w-4 h-4" />
+            </button>
+          </>
+        ) : (
+          <>
+            <Link to="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground">Log in</Link>
+            <Link to="/signup" className="text-sm font-medium bg-secondary text-secondary-foreground px-4 py-2 rounded-full hover:opacity-90 transition-opacity">
+              Sign up
+            </Link>
+          </>
+        )}
+      </div>
+    </header>
+  );
+};
 
 const BottomNav = () => {
   const location = useLocation();
