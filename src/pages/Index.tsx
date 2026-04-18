@@ -700,27 +700,37 @@ const DesktopLayout = () => (
   <div className="min-h-screen bg-background text-foreground">
     <DesktopNav />
     <LiveTicker />
-    <div className="max-w-7xl mx-auto px-6 pt-6">
-      <FeaturedShowsHero shows={featuredShows} />
-    </div>
-    <div className="max-w-7xl mx-auto">
-      <HotLotsRail />
-      <FeaturedCreators />
-      <DesktopStats />
-      <LimitedCoupons />
+    <div className="max-w-[1480px] mx-auto px-6 pt-6 flex gap-6">
+      <div className="flex-1 min-w-0">
+        <PersonalizedRail />
+        <FeaturedShowsHero shows={featuredShows} />
+        <HotLotsRail />
+        <FeaturedCreators />
+        <DesktopStats />
+        <LimitedCoupons />
 
-      <AnimatedSection className="px-6 py-8 border-t border-border/50">
-        <UpcomingEvents />
-        <BrowseCreatorGrid />
-        <BestSellersBanner />
-      </AnimatedSection>
+        <AnimatedSection className="px-6 py-8 border-t border-border/50">
+          <UpcomingEvents />
+          <BrowseCreatorGrid />
+          <BestSellersBanner />
+        </AnimatedSection>
 
-      <DesktopTestimonials />
-      <ServiceBar />
+        <DesktopTestimonials />
+        <ServiceBar />
+      </div>
+      <LiveBiddingSidebar />
     </div>
     <DesktopFooter />
   </div>
 );
+
+/* ─── Main ─── */
+const Index = () => {
+  const isMobile = useIsMobile();
+  return isMobile ? <MobileLiveFeed /> : <DesktopLayout />;
+};
+
+export default Index;
 
 /* ─── Main ─── */
 const Index = () => {
