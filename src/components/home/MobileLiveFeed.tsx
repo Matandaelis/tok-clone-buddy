@@ -130,7 +130,7 @@ const FeedSlide = ({ show, active }: { show: FeedShow; active: boolean }) => {
       </div>
 
       {/* Bottom content */}
-      <div className="absolute left-0 right-0 bottom-0 z-10 px-4 pb-6 pt-16 space-y-3">
+      <div className="absolute left-0 right-0 bottom-0 z-10 px-4 pb-[calc(env(safe-area-inset-bottom)+4.5rem)] pt-16 space-y-3">
         {/* Host */}
         <div className="flex items-center gap-2">
           <img src={show.hostAvatar} alt={show.host} className="w-9 h-9 rounded-full object-cover ring-2 ring-secondary" />
