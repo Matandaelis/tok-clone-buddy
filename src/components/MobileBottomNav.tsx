@@ -16,18 +16,12 @@ const MobileBottomNav = () => (
         key={item.path}
         to={item.path}
         end={item.path === "/"}
-        className="flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg text-muted-foreground transition-colors"
+        className="group relative flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg text-muted-foreground transition-colors"
         activeClassName="text-primary"
       >
-        {({ isActive }: { isActive: boolean }) => (
-          <>
-            <div className={`relative ${isActive ? "scale-110" : ""} transition-transform`}>
-              <item.icon className="w-5 h-5" />
-              {isActive && <span className="absolute -top-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary" />}
-            </div>
-            <span className="text-[10px] font-semibold">{item.label}</span>
-          </>
-        )}
+        <span className="absolute top-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary opacity-0 group-[.text-primary]:opacity-100" />
+        <item.icon className="w-5 h-5 transition-transform group-[.text-primary]:scale-110" />
+        <span className="text-[10px] font-semibold">{item.label}</span>
       </NavLink>
     ))}
   </nav>
