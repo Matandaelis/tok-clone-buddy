@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, MessageCircle, Share2, Gavel, Users, ShoppingBag, ChevronUp, Mic, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import MobileBottomNav from "@/components/MobileBottomNav";
 import { Button } from "@/components/ui/button";
 
 type FeedShow = {
