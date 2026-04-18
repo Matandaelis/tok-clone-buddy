@@ -731,11 +731,3 @@ const Index = () => {
 };
 
 export default Index;
-
-/* ─── Main ─── */
-const Index = () => {
-  const isMobile = useIsMobile();
-  return isMobile ? <MobileLanding /> : <DesktopLayout />;
-};
-
-export default Index;
