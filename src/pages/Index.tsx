@@ -6,6 +6,9 @@ import { Link } from "react-router-dom";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import FeaturedShowsHero, { type FeaturedShow } from "@/components/home/FeaturedShowsHero";
+import LiveTicker from "@/components/home/LiveTicker";
+import HotLotsRail from "@/components/home/HotLotsRail";
 import heroPhone1 from "@/assets/hero-phone1.jpeg";
 import heroPhone2 from "@/assets/hero-phone2.jpeg";
 import joinfunPhone from "@/assets/joinfun-phone.jpeg";
@@ -684,11 +687,21 @@ const DesktopFooter = () => (
   </footer>
 );
 
+const featuredShows: FeaturedShow[] = [
+  { id: 1, title: "Flash Sale Frenzy: Designer Steals", host: "LuxStyle", hostAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80", image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1600", viewers: 12430, category: "Auction", endsInSec: 184, topBid: "$1,840" },
+  { id: 2, title: "Sneaker Drop — Rare Grails Tonight", host: "KickzKing", hostAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80", image: "https://images.unsplash.com/photo-1556906781-9a412961c28c?w=1600", viewers: 21040, category: "Live Bid", endsInSec: 92, topBid: "$620" },
+  { id: 3, title: "Diamond Auction: Certified & Live", host: "CraftedGems", hostAvatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80", image: "https://images.unsplash.com/photo-1515562141589-67f0d14e5797?w=1600", viewers: 8760, category: "Premium", endsInSec: 312, topBid: "$2,150" },
+];
+
 const DesktopLayout = () => (
   <div className="min-h-screen bg-background text-foreground">
     <DesktopNav />
+    <LiveTicker />
+    <div className="max-w-7xl mx-auto px-6 pt-6">
+      <FeaturedShowsHero shows={featuredShows} />
+    </div>
     <div className="max-w-7xl mx-auto">
-      <LiveStreamSection />
+      <HotLotsRail />
       <FeaturedCreators />
       <DesktopStats />
       <LimitedCoupons />
