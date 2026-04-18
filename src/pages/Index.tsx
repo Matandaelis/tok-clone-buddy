@@ -9,6 +9,9 @@ import { useRef } from "react";
 import FeaturedShowsHero, { type FeaturedShow } from "@/components/home/FeaturedShowsHero";
 import LiveTicker from "@/components/home/LiveTicker";
 import HotLotsRail from "@/components/home/HotLotsRail";
+import LiveBiddingSidebar from "@/components/home/LiveBiddingSidebar";
+import PersonalizedRail from "@/components/home/PersonalizedRail";
+import MobileLiveFeed from "@/components/home/MobileLiveFeed";
 import heroPhone1 from "@/assets/hero-phone1.jpeg";
 import heroPhone2 from "@/assets/hero-phone2.jpeg";
 import joinfunPhone from "@/assets/joinfun-phone.jpeg";
@@ -697,23 +700,25 @@ const DesktopLayout = () => (
   <div className="min-h-screen bg-background text-foreground">
     <DesktopNav />
     <LiveTicker />
-    <div className="max-w-7xl mx-auto px-6 pt-6">
-      <FeaturedShowsHero shows={featuredShows} />
-    </div>
-    <div className="max-w-7xl mx-auto">
-      <HotLotsRail />
-      <FeaturedCreators />
-      <DesktopStats />
-      <LimitedCoupons />
+    <div className="max-w-[1480px] mx-auto px-6 pt-6 flex gap-6">
+      <div className="flex-1 min-w-0">
+        <PersonalizedRail />
+        <FeaturedShowsHero shows={featuredShows} />
+        <HotLotsRail />
+        <FeaturedCreators />
+        <DesktopStats />
+        <LimitedCoupons />
 
-      <AnimatedSection className="px-6 py-8 border-t border-border/50">
-        <UpcomingEvents />
-        <BrowseCreatorGrid />
-        <BestSellersBanner />
-      </AnimatedSection>
+        <AnimatedSection className="px-6 py-8 border-t border-border/50">
+          <UpcomingEvents />
+          <BrowseCreatorGrid />
+          <BestSellersBanner />
+        </AnimatedSection>
 
-      <DesktopTestimonials />
-      <ServiceBar />
+        <DesktopTestimonials />
+        <ServiceBar />
+      </div>
+      <LiveBiddingSidebar />
     </div>
     <DesktopFooter />
   </div>
@@ -722,7 +727,7 @@ const DesktopLayout = () => (
 /* ─── Main ─── */
 const Index = () => {
   const isMobile = useIsMobile();
-  return isMobile ? <MobileLanding /> : <DesktopLayout />;
+  return isMobile ? <MobileLiveFeed /> : <DesktopLayout />;
 };
 
 export default Index;
