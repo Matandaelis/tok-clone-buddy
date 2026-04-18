@@ -12,6 +12,7 @@ import HotLotsRail from "@/components/home/HotLotsRail";
 import LiveBiddingSidebar from "@/components/home/LiveBiddingSidebar";
 import PersonalizedRail from "@/components/home/PersonalizedRail";
 import MobileLiveFeed from "@/components/home/MobileLiveFeed";
+import DesktopSidebar from "@/components/DesktopSidebar";
 import heroPhone1 from "@/assets/hero-phone1.jpeg";
 import heroPhone2 from "@/assets/hero-phone2.jpeg";
 import joinfunPhone from "@/assets/joinfun-phone.jpeg";
