@@ -698,30 +698,33 @@ const featuredShows: FeaturedShow[] = [
 ];
 
 const DesktopLayout = () => (
-  <div className="min-h-screen bg-background text-foreground">
-    <DesktopNav />
-    <LiveTicker />
-    <div className="max-w-[1480px] mx-auto px-6 pt-6 flex gap-6">
-      <div className="flex-1 min-w-0">
-        <PersonalizedRail />
-        <FeaturedShowsHero shows={featuredShows} />
-        <HotLotsRail />
-        <FeaturedCreators />
-        <DesktopStats />
-        <LimitedCoupons />
+  <div className="min-h-screen bg-background text-foreground flex">
+    <DesktopSidebar />
+    <div className="flex-1 min-w-0">
+      <DesktopNav />
+      <LiveTicker />
+      <div className="mx-auto px-6 pt-6 flex gap-6 max-w-[1400px]">
+        <div className="flex-1 min-w-0">
+          <PersonalizedRail />
+          <FeaturedShowsHero shows={featuredShows} />
+          <HotLotsRail />
+          <FeaturedCreators />
+          <DesktopStats />
+          <LimitedCoupons />
 
-        <AnimatedSection className="px-6 py-8 border-t border-border/50">
-          <UpcomingEvents />
-          <BrowseCreatorGrid />
-          <BestSellersBanner />
-        </AnimatedSection>
+          <AnimatedSection className="px-6 py-8 border-t border-border/50">
+            <UpcomingEvents />
+            <BrowseCreatorGrid />
+            <BestSellersBanner />
+          </AnimatedSection>
 
-        <DesktopTestimonials />
-        <ServiceBar />
+          <DesktopTestimonials />
+          <ServiceBar />
+        </div>
+        <LiveBiddingSidebar />
       </div>
-      <LiveBiddingSidebar />
+      <DesktopFooter />
     </div>
-    <DesktopFooter />
   </div>
 );
 
