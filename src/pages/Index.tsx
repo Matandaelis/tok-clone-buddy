@@ -13,6 +13,7 @@ import LiveBiddingSidebar from "@/components/home/LiveBiddingSidebar";
 import PersonalizedRail from "@/components/home/PersonalizedRail";
 import MobileLiveFeed from "@/components/home/MobileLiveFeed";
 import DesktopSidebar from "@/components/DesktopSidebar";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import heroPhone1 from "@/assets/hero-phone1.jpeg";
 import heroPhone2 from "@/assets/hero-phone2.jpeg";
 import joinfunPhone from "@/assets/joinfun-phone.jpeg";
@@ -698,34 +699,39 @@ const featuredShows: FeaturedShow[] = [
 ];
 
 const DesktopLayout = () => (
-  <div className="min-h-screen bg-background text-foreground flex">
-    <DesktopSidebar />
-    <div className="flex-1 min-w-0">
-      <DesktopNav />
-      <LiveTicker />
-      <div className="mx-auto px-6 pt-6 flex gap-6 max-w-[1400px]">
-        <div className="flex-1 min-w-0">
-          <PersonalizedRail />
-          <FeaturedShowsHero shows={featuredShows} />
-          <HotLotsRail />
-          <FeaturedCreators />
-          <DesktopStats />
-          <LimitedCoupons />
-
-          <AnimatedSection className="px-6 py-8 border-t border-border/50">
-            <UpcomingEvents />
-            <BrowseCreatorGrid />
-            <BestSellersBanner />
-          </AnimatedSection>
-
-          <DesktopTestimonials />
-          <ServiceBar />
+  <SidebarProvider defaultOpen>
+    <div className="min-h-screen w-full bg-background text-foreground flex">
+      <DesktopSidebar />
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center px-4 h-12 border-b border-border/40">
+          <SidebarTrigger />
         </div>
-        <LiveBiddingSidebar />
+        <DesktopNav />
+        <LiveTicker />
+        <div className="mx-auto px-6 pt-6 flex gap-6 max-w-[1400px]">
+          <div className="flex-1 min-w-0">
+            <PersonalizedRail />
+            <FeaturedShowsHero shows={featuredShows} />
+            <HotLotsRail />
+            <FeaturedCreators />
+            <DesktopStats />
+            <LimitedCoupons />
+
+            <AnimatedSection className="px-6 py-8 border-t border-border/50">
+              <UpcomingEvents />
+              <BrowseCreatorGrid />
+              <BestSellersBanner />
+            </AnimatedSection>
+
+            <DesktopTestimonials />
+            <ServiceBar />
+          </div>
+          <LiveBiddingSidebar />
+        </div>
+        <DesktopFooter />
       </div>
-      <DesktopFooter />
     </div>
-  </div>
+  </SidebarProvider>
 );
 
 /* ─── Main ─── */
