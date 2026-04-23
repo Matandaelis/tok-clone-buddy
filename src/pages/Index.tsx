@@ -342,6 +342,7 @@ const MobileLanding = () => (
 const DesktopNav = () => (
   <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
     <div className="flex items-center gap-4 px-6 py-3">
+      <SidebarTrigger className="shrink-0 h-9 w-9 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground" />
       <Link to="/" className="flex items-center gap-2 shrink-0">
         <div className="w-8 h-8 rounded-full border-2 border-secondary flex items-center justify-center">
           <Mic className="w-4 h-4 text-secondary" />
@@ -703,9 +704,6 @@ const DesktopLayout = () => (
     <div className="min-h-screen w-full bg-background text-foreground flex">
       <DesktopSidebar />
       <div className="flex-1 min-w-0">
-        <div className="flex items-center px-4 h-12 border-b border-border/40">
-          <SidebarTrigger />
-        </div>
         <DesktopNav />
         <LiveTicker />
         <div className="mx-auto px-6 pt-6 flex gap-6 max-w-[1400px]">
